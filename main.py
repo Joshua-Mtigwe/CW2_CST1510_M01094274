@@ -1,4 +1,5 @@
 import bcrypt
+import sqlite3 
 
 #hashing using bcrypt
 def hash_generation(password):
@@ -35,9 +36,36 @@ def login_user():
         user_name, user_hash = user.strip().split(",")
         if name == user_name and is_hash_valid(password, user_hash):
             print("Logged in successfully")
+        else:
+            print("Incorrect username or password! Please try again.")
             return True
     return False
 
-print(register_user())
-print(login_user())
+#Main menu
+def main():
+    while True:
+        print("Welcome to the User Authentication System")
+        print("Please select an option: ")
+        print("1. Register New User")
+        print("2. Login Existing User")
+        print("3. Exit")
+
+        choice = input(": > ")
+
+        if choice == "1":
+            register_user()
+        elif choice == "2":
+            login_user()
+        elif choice == "3":
+            print("Exiting User Authentication System. Goodbye!")
+            break
+        else:
+            print("Option not recognised. Please try again.")
+                
+
+if __name__ == "__main__":
+    main()
+
+
+
 
