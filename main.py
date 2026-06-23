@@ -21,7 +21,7 @@ def register_user():
     name = input("Please enter your name: > ")
     password = input("Please enter your password: > ")
     hash = hash_generation(password)
-    with open("user_data.txt", "a") as f:
+    with open("DATA/user_data.txt", "a") as f:
         f.write(f"{name},{hash}\n")
     print("User Successfully registered")
 
@@ -30,7 +30,7 @@ def register_user():
 def login_user():
     name = input("Please enter your username: >  ")
     password = input("Please enter your password: > ")
-    with open("user_data.txt", "r") as f:
+    with open("DATA/user_data.txt", "r") as f:
         users  = f.readlines()
     for user in users:
         user_name, user_hash = user.strip().split(",")
@@ -61,10 +61,46 @@ def main():
             break
         else:
             print("Option not recognised. Please try again.")
+
+#user table
+def create_user_table(conn):
+    cur = conn.cursor()
+    sql = ('''
+            CREATE TABLE IF NOT EXISTS users (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                username      TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL
+            )
+        ''')
+    conn.execute(sql)
+    conn.commit() 
+
+#add user
+def add_user(conn, name, hash):
+    cur = conn.cursor()
+    sql = '''INSERT INTO users (username, password_hash) VALUES (?, ?)'''
+    param = (name, hash)
+    conn.execute(sql, param)
+    conn.commit()
+
+#user migration
+def migration_user(conn):
+    with open ('DATA/user_data.txt', "r") as f:
+        users = f.readlines()
+
+    for user in users:
+        name, hash =user.strip().split(",")
+        add_user(conn,name, hash)
                 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
+
+#Connecting to a DATABASE
+conn = sqlite3.connect('DATA/project_data.db')
+
+
+conn.close()
 
 
 
