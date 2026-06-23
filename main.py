@@ -1,5 +1,5 @@
 import bcrypt
-import sqlite3 
+import sqlite3
 
 #hashing using bcrypt
 def hash_generation(password):
@@ -96,12 +96,47 @@ def migration_user(conn):
 #if __name__ == "__main__":
 #    main()
 
-#Connecting to a DATABASE
-conn = sqlite3.connect('DATA/project_data.db')
+def get_all_users(conn):
+    cur = conn.cursor()
+    sql = '''SELECT * FROM users'''
+    conn.execute(sql)
+    users  = cur.fetchall()
+    conn.close()
+    return (users)
+
+def get_user(conn, name):
+    cur = conn.cursor()
+    sql = '''SELECT * FROM users WHERE username = ?'''
+    param = (name,)
+    cur.execute(sql, param)
+    user  = cur.fetchone()
+    conn.close()
+    return(user)
+
+def update_user(conn, old_name, new_name):
+    cur = conn.cursor()
+    sql = '''UPDATE users SET username = ? WHERE username = ?'''
+    param = (new_name, old_name)
+    cur.execute(sql, param)
+    conn.commit()
+    conn.close()
+
+def delete_user(conn, user_name):
+    cur = conn.cursor()
+    sql = '''DELETE FROM users WHERE username = ?'''
+    param = (user_name,)
+    cur.execute(sql, param)
+    conn.commit()
+    conn.close()
 
 
-conn.close()
 
+
+#conn = sqlite3.connect('DATA/project_data.db')
+
+#'data = pd.read_csv('DATA/cyber_incidents.csv')
+#print(data)
+    
 
 
 
